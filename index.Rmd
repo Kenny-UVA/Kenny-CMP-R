@@ -22,6 +22,7 @@ All wildly different strategies that seem to work but I want to find out if the 
 
 
 ### Island? City? or Country? How does it influence R&B?
+
 <script>
 
 library(tidyverse)
@@ -58,10 +59,12 @@ bmr %>%
 ### Chordogram Emotions 
 
 <script>
+
 library(tidyverse)
 library(spotifyr)
 library(compmus)
 library(conflicted)
+library(plotly)
 
 circshift <- function(v, n) {
   if (n == 0) v else c(tail(v, n), head(v, -n))
@@ -175,6 +178,8 @@ emotions |>
   scale_fill_viridis_c(guide = "none") +
   theme_minimal() +
   labs(x = "Time (s)", y = "")
+
+
 </script>
   
 ### Chordogram Virgo's Groove 
