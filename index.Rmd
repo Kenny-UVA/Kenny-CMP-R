@@ -25,7 +25,7 @@ All wildly different strategies that seem to work but I want to find out if the 
 ### Island? City? or Country? How does it influence R&B?
 
 
-<script>
+```{r ggplot}
 
 library(tidyverse)
 library(spotifyr)
@@ -51,7 +51,7 @@ ggplot(
     
 print(ggplotly())
 
-</script>
+```
 
 
 
@@ -65,7 +65,7 @@ print(ggplotly())
 
 ### Chordogram Emotions 
 
-<script>
+```{r ggplot2}
 
 library(tidyverse)
 library(spotifyr)
@@ -187,11 +187,11 @@ emotions |>
   labs(x = "Time (s)", y = "")
 
 
-</print>
+```
   
 ### Chordogram Virgo's Groove 
 
-<script>
+```{r ggplot3}
 
 library(tidyverse)
 library(spotifyr)
@@ -311,11 +311,11 @@ virgos_groove |>
   theme_minimal() +
   labs(x = "Time (s)", y = "")
   
-</script>
+```
 
 ### Chordogram Higher
 
-<script>
+```{r ggplot4}
 
 library(tidyverse)
 library(spotifyr)
@@ -435,7 +435,7 @@ higher |>
   theme_minimal() +
   labs(x = "Time (s)", y = "")
   
-</script>
+```
 
 ### Conclusion
 
