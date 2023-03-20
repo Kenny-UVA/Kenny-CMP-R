@@ -477,6 +477,7 @@ summer_renaissance |>
   
 ```
 ***
+
 <p>
 
 I wanted to take a look at the final track of the song which pulls from a lot of samples and kind of has a lot going on. In the histogram we saw that it had a tempo of 120 BPM and to my surprise this tempogram also has a pretty strong and stable tempo of 120 BPM. It is house music so that is to be expected but the track itself does have a lot going, she raps on certain parts, sings on certain parts bu there's different melodies which is reflected a little bit in the gram but not all that much. I guess maybe that shows that if you have a very solid baseline of tempo you can be pretty creative with the rest of the song.
