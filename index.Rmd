@@ -466,6 +466,10 @@ I really wanted to investigate the tempo's in Beyoncé's latest album "Renaissan
 
 ```{r ggplot6}
 
+library(tidyverse)
+library(spotifyr)
+library(compmus)
+
 summer_renaissance <- get_tidy_audio_analysis("3HyR1j49TY5ACP2lseF1jx")
 summer_renaissance |>
   tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) |>
