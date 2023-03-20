@@ -476,6 +476,7 @@ summer_renaissance |>
   theme_classic()
   
 ```
+
 ***
 
 <p>
