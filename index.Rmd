@@ -39,9 +39,11 @@ library(plotly)
 # library(conflicted)
 library(dataset)
 
-bmr <- get_playlist_audio_features('','2uzoyXBjDGEEpwAEMVfuB3') %>%
-  unnest(track.artists) %>%
-  filter(name == "Beyoncé")
+
+bmr <- 
+get_playlist_audio_features('','2uzoyXBjDGEEpwAEMVfuB3')%>% 
+ unnest(track.artists) %>%
+  filter(name == "Beyoncé" | name == "Rihanna" | name == "Mariah Carey")
 
 bmr %>%
 ggplot(                   
@@ -52,10 +54,11 @@ ggplot(
       colour = name
     )
   ) +
-  geom_point() +
-  scale_size_continuous(     
-    trans = "exp",)
-    
+   geom_jitter() + scale_size_continuous(      
+    trans = "exp",           
+    guide = "none"            
+  )
+  
 print(ggplotly())
 
 ```
@@ -459,8 +462,26 @@ I really wanted to investigate the tempo's in Beyoncé's latest album "Renaissan
 
 <p>
 
-### Summer Renaissance - Tempogram
+### Summer Renaissance - Tempogram {data-commentary-width="400"}
 
+```{r ggplot6}
+
+summer_renaissance <- get_tidy_audio_analysis("3HyR1j49TY5ACP2lseF1jx")
+summer_renaissance |>
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) |>
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+  
+```
+***
+<p>
+
+I wanted to take a look at the final track of the song which pulls from a lot of samples and kind of has a lot going on. In the histogram we saw that it had a tempo of 120 BPM and to my surprise this tempogram also has a pretty strong and stable tempo of 120 BPM. It is house music so that is to be expected but the track itself does have a lot going, she raps on certain parts, sings on certain parts bu there's different melodies which is reflected a little bit in the gram but not all that much. I guess maybe that shows that if you have a very solid baseline of tempo you can be pretty creative with the rest of the song.
+
+<p>
 ### Conclusion
 
 
