@@ -28,7 +28,7 @@ All wildly different strategies that seem to work but I want to find out if the 
 
 <p>
 
-### Island? City? or Country? How does it influence R&B?
+### Grammy's 
 
 ```{r ggplot}
 
@@ -45,25 +45,224 @@ get_playlist_audio_features('','2uzoyXBjDGEEpwAEMVfuB3')%>%
  unnest(track.artists) %>%
   filter(name == "Beyoncé" | name == "Rihanna" | name == "Mariah Carey")
 
-bmr %>%
-ggplot(                   
+grammy <- 
+  get_playlist_audio_features('','4lPqkYWl4aQEFUwRQWngHu') %>% 
+  unnest(track.artists) %>%
+  filter(name == "Beyoncé" | name == "Rihanna" | name == "Mariah Carey")
+
+  grammy %>% ggplot(
     aes(
-      x = danceability,
-      y = tempo,
-      size = track.popularity,
-      colour = name
+      x = acousticness,
+      y = valence,
+      colour = track.name,
+      size = track.popularity 
     )
   ) +
-   geom_jitter() + scale_size_continuous(      
-    trans = "exp",           
-    guide = "none"            
+  geom_point(aes()) +
+  theme_minimal() +
+ 
+  labs(
+    
+    x = "acousticness",
+    
+    y = "Valence",
+    
+    colour = "Track Name",
+    
+    size = "Popularity"
+    )
+
+print(ggplotly())
+```
+***
+
+<p>
+
+From my corpus I selected songs that have won a grammy. I did this because I wanted to what makes an excellent song, at least according to the grammy’s. And since the artists in my corpus are R&B musicians I’m expecting them to be more on the acoustic since R&B is an older genre and also low valance since since R&B usually also covers more serious subject matters. 
+
+
+The results were unexpected but do however make sense if you consider how R&B has evolved to be more electronic. There are some outliers though like Black Parade which to me does not sound like it should have such low valance or We Belong together that has high valance but is actually a somewhat sad song it does sound a bit more upbeat though. 
+
+<p>
+
+### Hits 
+```{r ggplot56}
+
+library(tidyverse)
+library(spotifyr)
+library(compmus)
+library(plotly)
+# library(conflicted)
+library(dataset)
+
+
+
+hits <- 
+  get_playlist_audio_features('','6DE69JDxkRWxQpkB5TNrBR') %>% 
+  unnest(track.artists) %>%
+  filter(name == "Beyoncé" | name == "Rihanna" | name == "Mariah Carey")
+
+  hits %>% ggplot(
+    aes(
+      x = danceability,
+      y = valence,
+      colour = name,
+      size = track.popularity 
+    )
+  ) +
+  geom_point(aes()) +
+  theme_minimal() +
+ 
+  labs(
+    
+    x = "acousticness",
+    
+    y = "Valence",
+    
+    colour = "Artist",
+    
+    size = "Popularity"
+    )
+
+print(ggplotly())
+  
+```
+### Self Similarity Matrice - Black Parade 
+```{r ggplot67}
+
+library(tidyverse)
+library(spotifyr)
+library(compmus)
+library(plotly)
+library(dataset)
+
+blackp <-
+  get_tidy_audio_analysis("2qzUpSVI4NnPyWxbXwumTj") |> # Change URI.
+  compmus_align(bars, segments) |>                     # Change `bars`
+  select(bars) |>                                      #   in all three
+  unnest(bars) |>                                      #   of these lines.
+  mutate(
+    pitches =
+      map(segments,
+          compmus_summarise, pitches,
+          method = "rms", norm = "euclidean"              # Change summary & norm.
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+          compmus_summarise, timbre,
+          method = "rms", norm = "euclidean"              # Change summary & norm.
+      )
   )
+
+blackp |>
+  compmus_self_similarity(pitches, "cosine") |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_classic() +
+  labs(x = "", y = "")
+
+blackp |>
+  compmus_self_similarity(timbre, "cosine") |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_classic() +
+  labs(x = "", y = "")
+
+
+```
+### Self Similarity Matrice - We Belong Together 
+```{r ggplot97}
+
+library(tidyverse)
+library(spotifyr)
+library(compmus)
+library(plotly)
+library(dataset)
+
+webelongt <-
+  get_tidy_audio_analysis("4EI8VuxUuIHKfafU72emqz") |> # Change URI.
+  compmus_align(bars, segments) |>                     # Change `bars`
+  select(bars) |>                                      #   in all three
+  unnest(bars) |>                                      #   of these lines.
+  mutate(
+    pitches =
+      map(segments,
+          compmus_summarise, pitches,
+          method = "rms", norm = "euclidean"              # Change summary & norm.
+      )
+  ) |>
+  mutate(
+    timbre =
+      map(segments,
+          compmus_summarise, timbre,
+          method = "rms", norm = "euclidean"              # Change summary & norm.
+      )
+  )
+
+webelongt |>
+  compmus_self_similarity(pitches, "cosine") |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_classic() +
+  labs(x = "", y = "")
+  
+print(ggplotly())
+
+
+webelongt |>
+  compmus_self_similarity(timbre, "cosine") |> 
+  ggplot(
+    aes(
+      x = xstart + xduration / 2,
+      width = xduration,
+      y = ystart + yduration / 2,
+      height = yduration,
+      fill = d
+    )
+  ) +
+  geom_tile() +
+  coord_fixed() +
+  scale_fill_viridis_c(guide = "none") +
+  theme_classic() +
+  labs(x = "", y = "")
   
 print(ggplotly())
 
 ```
 
-### Chordogram Emotions
+### Chordogram We Belong Together
 
 ```{r ggplot2}
 
@@ -189,255 +388,8 @@ emotions |>
 
 ```
 
-### Chordogram Virgo's Groove
 
-```{r ggplot3}
-
-library(tidyverse)
-library(spotifyr)
-library(compmus)
-library(conflicted)
-
-circshift <- function(v, n) {
-  if (n == 0) v else c(tail(v, n), head(v, -n))
-}
-
-#      C     C#    D     Eb    E     F     F#    G     Ab    A     Bb    B
-major_chord <-
-  c(   1,    0,    0,    0,    1,    0,    0,    1,    0,    0,    0,    0)
-minor_chord <-
-  c(   1,    0,    0,    1,    0,    0,    0,    1,    0,    0,    0,    0)
-seventh_chord <-
-  c(   1,    0,    0,    0,    1,    0,    0,    1,    0,    0,    1,    0)
-
-major_key <-
-  c(6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
-minor_key <-
-  c(6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
-
-chord_templates <-
-  tribble(
-    ~name, ~template,
-    "Gb:7", circshift(seventh_chord, 6),
-    "Gb:maj", circshift(major_chord, 6),
-    "Bb:min", circshift(minor_chord, 10),
-    "Db:maj", circshift(major_chord, 1),
-    "F:min", circshift(minor_chord, 5),
-    "Ab:7", circshift(seventh_chord, 8),
-    "Ab:maj", circshift(major_chord, 8),
-    "C:min", circshift(minor_chord, 0),
-    "Eb:7", circshift(seventh_chord, 3),
-    "Eb:maj", circshift(major_chord, 3),
-    "G:min", circshift(minor_chord, 7),
-    "Bb:7", circshift(seventh_chord, 10),
-    "Bb:maj", circshift(major_chord, 10),
-    "D:min", circshift(minor_chord, 2),
-    "F:7", circshift(seventh_chord, 5),
-    "F:maj", circshift(major_chord, 5),
-    "A:min", circshift(minor_chord, 9),
-    "C:7", circshift(seventh_chord, 0),
-    "C:maj", circshift(major_chord, 0),
-    "E:min", circshift(minor_chord, 4),
-    "G:7", circshift(seventh_chord, 7),
-    "G:maj", circshift(major_chord, 7),
-    "B:min", circshift(minor_chord, 11),
-    "D:7", circshift(seventh_chord, 2),
-    "D:maj", circshift(major_chord, 2),
-    "F#:min", circshift(minor_chord, 6),
-    "A:7", circshift(seventh_chord, 9),
-    "A:maj", circshift(major_chord, 9),
-    "C#:min", circshift(minor_chord, 1),
-    "E:7", circshift(seventh_chord, 4),
-    "E:maj", circshift(major_chord, 4),
-    "G#:min", circshift(minor_chord, 8),
-    "B:7", circshift(seventh_chord, 11),
-    "B:maj", circshift(major_chord, 11),
-    "D#:min", circshift(minor_chord, 3)
-  )
-
-key_templates <-
-  tribble(
-    ~name, ~template,
-    "Gb:maj", circshift(major_key, 6),
-    "Bb:min", circshift(minor_key, 10),
-    "Db:maj", circshift(major_key, 1),
-    "F:min", circshift(minor_key, 5),
-    "Ab:maj", circshift(major_key, 8),
-    "C:min", circshift(minor_key, 0),
-    "Eb:maj", circshift(major_key, 3),
-    "G:min", circshift(minor_key, 7),
-    "Bb:maj", circshift(major_key, 10),
-    "D:min", circshift(minor_key, 2),
-    "F:maj", circshift(major_key, 5),
-    "A:min", circshift(minor_key, 9),
-    "C:maj", circshift(major_key, 0),
-    "E:min", circshift(minor_key, 4),
-    "G:maj", circshift(major_key, 7),
-    "B:min", circshift(minor_key, 11),
-    "D:maj", circshift(major_key, 2),
-    "F#:min", circshift(minor_key, 6),
-    "A:maj", circshift(major_key, 9),
-    "C#:min", circshift(minor_key, 1),
-    "E:maj", circshift(major_key, 4),
-    "G#:min", circshift(minor_key, 8),
-    "B:maj", circshift(major_key, 11),
-    "D#:min", circshift(minor_key, 3)
-  )
-
-
-virgos_groove <-
-  get_tidy_audio_analysis("0Fl4eWzVaMUOdXcOrj6F1q") |>
-  compmus_align(sections, segments) |>
-  select(sections) |>
-  unnest(sections) |>
-  mutate(
-    pitches =
-      map(segments,
-          compmus_summarise, pitches,
-          method = "mean", norm = "manhattan"
-      )
-  )
-virgos_groove |> 
-  compmus_match_pitch_template(
-    key_templates,         # Change to chord_templates if descired
-    method = "euclidean",  # Try different distance metrics
-    norm = "manhattan"     # Try different norms
-  ) |>
-  ggplot(
-    aes(x = start + duration / 2, width = duration, y = name, fill = d)
-  ) +
-  geom_tile() +
-  scale_fill_viridis_c(guide = "none") +
-  theme_minimal() +
-  labs(x = "Time (s)", y = "")
-  
-```
-
-### Chordogram Higher
-
-```{r ggplot4}
-
-library(tidyverse)
-library(spotifyr)
-library(compmus)
-library(conflicted)
-
-circshift <- function(v, n) {
-  if (n == 0) v else c(tail(v, n), head(v, -n))
-}
-
-#      C     C#    D     Eb    E     F     F#    G     Ab    A     Bb    B
-major_chord <-
-  c(   1,    0,    0,    0,    1,    0,    0,    1,    0,    0,    0,    0)
-minor_chord <-
-  c(   1,    0,    0,    1,    0,    0,    0,    1,    0,    0,    0,    0)
-seventh_chord <-
-  c(   1,    0,    0,    0,    1,    0,    0,    1,    0,    0,    1,    0)
-
-major_key <-
-  c(6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88)
-minor_key <-
-  c(6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17)
-
-chord_templates <-
-  tribble(
-    ~name, ~template,
-    "Gb:7", circshift(seventh_chord, 6),
-    "Gb:maj", circshift(major_chord, 6),
-    "Bb:min", circshift(minor_chord, 10),
-    "Db:maj", circshift(major_chord, 1),
-    "F:min", circshift(minor_chord, 5),
-    "Ab:7", circshift(seventh_chord, 8),
-    "Ab:maj", circshift(major_chord, 8),
-    "C:min", circshift(minor_chord, 0),
-    "Eb:7", circshift(seventh_chord, 3),
-    "Eb:maj", circshift(major_chord, 3),
-    "G:min", circshift(minor_chord, 7),
-    "Bb:7", circshift(seventh_chord, 10),
-    "Bb:maj", circshift(major_chord, 10),
-    "D:min", circshift(minor_chord, 2),
-    "F:7", circshift(seventh_chord, 5),
-    "F:maj", circshift(major_chord, 5),
-    "A:min", circshift(minor_chord, 9),
-    "C:7", circshift(seventh_chord, 0),
-    "C:maj", circshift(major_chord, 0),
-    "E:min", circshift(minor_chord, 4),
-    "G:7", circshift(seventh_chord, 7),
-    "G:maj", circshift(major_chord, 7),
-    "B:min", circshift(minor_chord, 11),
-    "D:7", circshift(seventh_chord, 2),
-    "D:maj", circshift(major_chord, 2),
-    "F#:min", circshift(minor_chord, 6),
-    "A:7", circshift(seventh_chord, 9),
-    "A:maj", circshift(major_chord, 9),
-    "C#:min", circshift(minor_chord, 1),
-    "E:7", circshift(seventh_chord, 4),
-    "E:maj", circshift(major_chord, 4),
-    "G#:min", circshift(minor_chord, 8),
-    "B:7", circshift(seventh_chord, 11),
-    "B:maj", circshift(major_chord, 11),
-    "D#:min", circshift(minor_chord, 3)
-  )
-
-key_templates <-
-  tribble(
-    ~name, ~template,
-    "Gb:maj", circshift(major_key, 6),
-    "Bb:min", circshift(minor_key, 10),
-    "Db:maj", circshift(major_key, 1),
-    "F:min", circshift(minor_key, 5),
-    "Ab:maj", circshift(major_key, 8),
-    "C:min", circshift(minor_key, 0),
-    "Eb:maj", circshift(major_key, 3),
-    "G:min", circshift(minor_key, 7),
-    "Bb:maj", circshift(major_key, 10),
-    "D:min", circshift(minor_key, 2),
-    "F:maj", circshift(major_key, 5),
-    "A:min", circshift(minor_key, 9),
-    "C:maj", circshift(major_key, 0),
-    "E:min", circshift(minor_key, 4),
-    "G:maj", circshift(major_key, 7),
-    "B:min", circshift(minor_key, 11),
-    "D:maj", circshift(major_key, 2),
-    "F#:min", circshift(minor_key, 6),
-    "A:maj", circshift(major_key, 9),
-    "C#:min", circshift(minor_key, 1),
-    "E:maj", circshift(major_key, 4),
-    "G#:min", circshift(minor_key, 8),
-    "B:maj", circshift(major_key, 11),
-    "D#:min", circshift(minor_key, 3)
-  )
-
-
-higher <-
-  get_tidy_audio_analysis("1KnJwhZU3DIBe54Q4HPpIl") |>
-  compmus_align(sections, segments) |>
-  select(sections) |>
-  unnest(sections) |>
-  mutate(
-    pitches =
-      map(segments,
-          compmus_summarise, pitches,
-          method = "mean", norm = "manhattan"
-      )
-  )
-higher |> 
-  compmus_match_pitch_template(
-    key_templates,         # Change to chord_templates if descired
-    method = "euclidean",  # Try different distance metrics
-    norm = "manhattan"     # Try different norms
-  ) |>
-  ggplot(
-    aes(x = start + duration / 2, width = duration, y = name, fill = d)
-  ) +
-  geom_tile() +
-  scale_fill_viridis_c(guide = "none") +
-  theme_minimal() +
-  labs(x = "Time (s)", y = "")
-  
-```
-
-### Renaissance - Histogram {data-commentary-width="400"}
+### Grammy's - Histogram {data-commentary-width="400"}
 
 ```{r ggplot5}
 library(tidyverse)
@@ -448,7 +400,7 @@ library(plotly)
 library(dataset)
 
 
-renny <- get_playlist_audio_features('','6Y6MzwWAdzHLOXh6v424Kd') 
+renny <- get_playlist_audio_features('','4lPqkYWl4aQEFUwRQWngHu') 
  renny |> ggplot(aes(x = tempo, color = , fill = track.name)) + geom_histogram(binwidth = 5)
  
  print(ggplotly())
@@ -458,11 +410,11 @@ renny <- get_playlist_audio_features('','6Y6MzwWAdzHLOXh6v424Kd')
 
 <p>
 
-I really wanted to investigate the tempo's in Beyoncé's latest album "Renaissance" since all the tracks flow so seamlessly into each-other. What I found was interesting because while yes the tracks all do have similart tempo's if you follow along the albums order it varies wildly so for example at the beginning it starts somewhat on the lower end with "I'M THAT GIRL"than immediately jumps to the fastest tempo with "COZY" and then back to the middle with "AlIEN SUPERSTAR". What I also found interesting was that the tracks that I thought would be fast so for example "CHURCH GIRL" isn't but a track that a associate with a slower tempo like "COZY" has a really fast tempo.
+
 
 <p>
 
-### Summer Renaissance - Tempogram {data-commentary-width="400"}
+### Black Parade - Tempogram {data-commentary-width="400"}
 
 ```{r ggplot6}
 
@@ -470,7 +422,7 @@ library(tidyverse)
 library(spotifyr)
 library(compmus)
 
-summer_renaissance <- get_tidy_audio_analysis("3HyR1j49TY5ACP2lseF1jx")
+summer_renaissance <- get_tidy_audio_analysis("2qzUpSVI4NnPyWxbXwumTj")
 summer_renaissance |>
   tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) |>
   ggplot(aes(x = time, y = bpm, fill = power)) +
@@ -487,6 +439,12 @@ summer_renaissance |>
 I wanted to take a look at the final track of the song which pulls from a lot of samples and kind of has a lot going on. In the histogram we saw that it had a tempo of 120 BPM and to my surprise this tempogram also has a pretty strong and stable tempo of 120 BPM. It is house music so that is to be expected but the track itself does have a lot going, she raps on certain parts, sings on certain parts bu there's different melodies which is reflected a little bit in the gram but not all that much. I guess maybe that shows that if you have a very solid baseline of tempo you can be pretty creative with the rest of the song.
 
 <p>
+### Clustering 
+```{r ggplot689}
+
+
+```
+
 ### Conclusion
 
 
