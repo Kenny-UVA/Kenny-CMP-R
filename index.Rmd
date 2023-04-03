@@ -74,6 +74,7 @@ grammy <-
 
 print(ggplotly())
 ```
+
 ***
 
 <p>
@@ -85,8 +86,8 @@ The results were unexpected but do however make sense if you consider how R&B ha
 
 <p>
 
-### Hits 
-```{r ggplot56}
+### Hits {data-commentary-width="400"}
+```{r ggplot556}
 
 library(tidyverse)
 library(spotifyr)
@@ -104,6 +105,32 @@ hits <-
 
   hits %>% ggplot(
     aes(
+      x = acousticness,
+      y = valence,
+      colour = name,
+      size = track.popularity 
+    )
+  ) +
+  geom_point(aes()) +
+  theme_minimal() +
+ 
+  labs(
+    
+    x = "Acousticness",
+    
+    y = "Valence",
+    
+    colour = "Artist",
+    
+    size = "Popularity"
+    )
+
+print(ggplotly())
+```
+***
+```{r ggplot565}
+hits %>% ggplot(
+    aes(
       x = danceability,
       y = valence,
       colour = name,
@@ -115,7 +142,7 @@ hits <-
  
   labs(
     
-    x = "acousticness",
+    x = "Danceability",
     
     y = "Valence",
     
@@ -125,8 +152,20 @@ hits <-
     )
 
 print(ggplotly())
-  
 ```
+
+***
+
+<p>
+
+From my corpus I also selected a few songs that reached no 1 on the US billboard charts, To see wether there's a difference between them and the grammy winning songs. I first looked at acousticness and valance just like before and then also danceability since I'm expecting these to be more danceable than the grammy winning tracks.
+
+
+
+The results here again are interesting and we see that Mariah has the most number 1's but also that in terms of popularity some of those songs scored very low, that ofcourse most likely has to do with the fact that these are probably some of her older songs. Mariah is also the one who has scored the most  high on acousticness this again I think showcases how the genre has changed over the years. As expected most songs that have high danceability also tend to score high on valance. It's interesting that Mariah seems to be the only one who has managed to get multiple number 1's with songs that have a low valance rating and low danceability 
+
+<p>
+
 ### Self Similarity Matrice - Black Parade 
 ```{r ggplot67}
 
@@ -190,8 +229,24 @@ blackp |>
   theme_classic() +
   labs(x = "", y = "")
 
+print(ggplotly())
 
 ```
+***
+
+<p>
+
+From the previous experiments I selected Black Parade as an outlier since it was a song with a very Low Valance rating but also very low acousticness rating I want to see if there's anything in the structure of the song that would make spottifiy think this since to me this song should have scored higher on both
+
+The chroma based self similarity matrice I did expect to be more vague since she is "rap singing" for the majority of the track There is something happening very clearly at around the 60 and I think this is the point in the track where she starts singing and thus changes in pitch pretty dramatically. 
+
+With the timbre based self similarity matrice you can definetly see more of a strcuture but It's stil pretty vague, the track does have non-western influences which could potentially account for that but also at  the same time I think it also means that even though there is a lot of instrumentation and especially because said instrumentation is probably electronic, the beat does not change much and stays exactly the same for most of the track which would make sense for a modern R&B song. 
+
+
+
+<p>
+
+
 ### Self Similarity Matrice - We Belong Together 
 ```{r ggplot97}
 
@@ -262,7 +317,21 @@ print(ggplotly())
 
 ```
 
-### Chordogram We Belong Together
+
+***
+
+<p>
+
+From the previous experiments I also selected We belong Together as an outlier since it sounds upbeat but still is very sad and wanted to see again here what the  strcuture of the song looks like. 
+
+The chroma bases self similarity matrice is interesting because it does show a lot of pitch changes and quite rapid after eachother too, I think maybe this is a reason for why the track sounds more upbeat. I think this also showcases the melismatic nature of the way Mariah Carey sings her songs. 
+
+The timbre based self similarity matrice is  also interesting because it kinds shows how the song is kind of this build up of energy until it reaches the climax at the end where she not only belts in full power but also the texture in her voice. I think it's interesting that spotify's timbre feautures were able to pick up on that. 
+
+
+<p>
+
+### Chordogram Single Ladies 
 
 ```{r ggplot2}
 
@@ -359,8 +428,8 @@ key_templates <-
   )
 
 
-emotions <-
-  get_tidy_audio_analysis("0cELvuwJW1acISUHYB6suj") |>
+singleladies <-
+  get_tidy_audio_analysis("557un1HgwYMuqfWGSTmnxw") |>
   compmus_align(sections, segments) |>
   select(sections) |>
   unnest(sections) |>
@@ -371,7 +440,7 @@ emotions <-
           method = "mean", norm = "manhattan"
       )
   )
-emotions |> 
+singleladies |> 
   compmus_match_pitch_template(
     key_templates,         # Change to chord_templates if descired
     method = "euclidean",  # Try different distance metrics
@@ -387,6 +456,16 @@ emotions |>
 
 
 ```
+
+***
+
+<p>
+
+Single Ladies was also another outlier in my corpus because it is a hit and it also scored low on valance, but I think most would say that it is a really positive song. From what we've seen so far there is a trend with Beyoncé scoring lower on valance eeven if the track itself is not as negative. So now I'm wondering if they keys have something to do with it. 
+
+From the chrodogram the first thing I noticed was how it showcases the way Beyoncé has a tendency of layering her vocals on top of eachother essentially harmonizing with herself, that is very apparent here. I was expecting to find more minor notes as a way of explaining the low valance, but it seems fairly well-balanced. The chordogram fails to give me much insight to give an answer to my question but is still intersting nonetheless. 
+
+<p>
 
 
 ### Grammy's - Histogram {data-commentary-width="400"}
@@ -436,9 +515,10 @@ summer_renaissance |>
 
 <p>
 
-I wanted to take a look at the final track of the song which pulls from a lot of samples and kind of has a lot going on. In the histogram we saw that it had a tempo of 120 BPM and to my surprise this tempogram also has a pretty strong and stable tempo of 120 BPM. It is house music so that is to be expected but the track itself does have a lot going, she raps on certain parts, sings on certain parts bu there's different melodies which is reflected a little bit in the gram but not all that much. I guess maybe that shows that if you have a very solid baseline of tempo you can be pretty creative with the rest of the song.
+I chose Black Parade again to do a tempogram of because I'm still kind of in awe of how a track that feels so unstructured can be so standardized and here again we see that the tempo barely changes over the entire song except for a small part in thee beginning. 
 
 <p>
+
 ### Clustering 
 ```{r ggplot689}
 
@@ -447,4 +527,5 @@ I wanted to take a look at the final track of the song which pulls from a lot of
 
 ### Conclusion
 
+In Conclusion, I set out to explore what makes a good R&B song or rather what strategies do Mariah Carey, Beyoncé and Rihanna all employ that make them succesful R&B artists and I definetely gained some valuable insight 
 
