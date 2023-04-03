@@ -28,7 +28,7 @@ All wildly different strategies that seem to work but I want to find out if the 
 
 <p>
 
-### Grammy's 
+### Grammy's {data-commentary-width="400"}
 
 ```{r ggplot}
 
@@ -39,11 +39,6 @@ library(plotly)
 # library(conflicted)
 library(dataset)
 
-
-bmr <- 
-get_playlist_audio_features('','2uzoyXBjDGEEpwAEMVfuB3')%>% 
- unnest(track.artists) %>%
-  filter(name == "Beyoncé" | name == "Rihanna" | name == "Mariah Carey")
 
 grammy <- 
   get_playlist_audio_features('','4lPqkYWl4aQEFUwRQWngHu') %>% 
@@ -87,6 +82,7 @@ The results were unexpected but do however make sense if you consider how R&B ha
 <p>
 
 ### Hits {data-commentary-width="400"}
+
 ```{r ggplot556}
 
 library(tidyverse)
@@ -96,39 +92,11 @@ library(plotly)
 # library(conflicted)
 library(dataset)
 
-
-
-hits <- 
-  get_playlist_audio_features('','6DE69JDxkRWxQpkB5TNrBR') %>% 
+hits <-
+ get_playlist_audio_features('','6DE69JDxkRWxQpkB5TNrBR') %>% 
   unnest(track.artists) %>%
   filter(name == "Beyoncé" | name == "Rihanna" | name == "Mariah Carey")
 
-  hits %>% ggplot(
-    aes(
-      x = acousticness,
-      y = valence,
-      colour = name,
-      size = track.popularity 
-    )
-  ) +
-  geom_point(aes()) +
-  theme_minimal() +
- 
-  labs(
-    
-    x = "Acousticness",
-    
-    y = "Valence",
-    
-    colour = "Artist",
-    
-    size = "Popularity"
-    )
-
-print(ggplotly())
-```
-***
-```{r ggplot565}
 hits %>% ggplot(
     aes(
       x = danceability,
@@ -158,15 +126,66 @@ print(ggplotly())
 
 <p>
 
-From my corpus I also selected a few songs that reached no 1 on the US billboard charts, To see wether there's a difference between them and the grammy winning songs. I first looked at acousticness and valance just like before and then also danceability since I'm expecting these to be more danceable than the grammy winning tracks.
+From my corpus I also selected a few songs that reached no 1 on the US billboard charts, To see wether there's a difference between them and the grammy winning songs at least in terms of valance. I replaced acousticness with danceability here just to see wether the notion that danceable songs are more popular holds some truth.
 
 
 
-The results here again are interesting and we see that Mariah has the most number 1's but also that in terms of popularity some of those songs scored very low, that ofcourse most likely has to do with the fact that these are probably some of her older songs. Mariah is also the one who has scored the most  high on acousticness this again I think showcases how the genre has changed over the years. As expected most songs that have high danceability also tend to score high on valance. It's interesting that Mariah seems to be the only one who has managed to get multiple number 1's with songs that have a low valance rating and low danceability 
+The results here again are interesting and we see that Mariah has the most number 1's but also that in terms of popularity some of those songs scored very low, that ofcourse most likely has to do with the fact that these are probably some of her older songs. As expected most songs that have high danceability also tend to score high on valance. It's interesting that Mariah seems to be the only one who has managed to get multiple number 1's with songs that have a low valance rating and low danceability. What's also interesting is that Single Ladies by Beyoncé which has maybe one of the most recognizable dance routines got rated so low on danceability. 
 
 <p>
 
-### Self Similarity Matrice - Black Parade 
+
+### Major Minor {data-commentary-width="400"}
+
+```{r ggplot5569}
+
+library(tidyverse)
+library(spotifyr)
+library(compmus)
+library(plotly)
+# library(conflicted)
+library(dataset)
+
+bmr3 <- get_playlist_audio_features('','4SW5SlC1QM1pjv86CJ7QwT') %>% 
+  unnest(track.artists) %>%
+  filter(name == "Beyoncé" | name == "Rihanna" | name == "Mariah Carey")
+
+  bmr3 |>
+  ggplot(
+    aes(
+      x = acousticness,
+      y = valence,
+      colour = mode,
+      size = danceability,
+      alpha = loudness
+    )
+  ) +
+  geom_point() +
+  geom_rug() +
+  theme_minimal() +
+  labs(
+    x = "Acousticness",
+    y = "Valence",
+    colour = "Mode",
+    size = "Danceability",
+    alpha = "Volume (dBFS)",
+    name = "Artist"
+  )
+  
+print(ggplotly())
+```
+
+
+***
+
+<p>
+
+For this graph I combined both the hits and grammy winning songs into one playlist to showcase modality but also accousticness and danceability. Overall it does seem that what would make good R&B music, especially contemporary R&B music, is a combination of high valence, low acousticness but with high danceability. This graph also shows maybe how the genre has changed over the years since all of the songs in the lower left corner with low valence and high acousticness are by Mariah Carey and those are some of her older songs. 
+
+<p>
+
+
+### Self Similarity Matrice - Black Parade {data-commentary-width="400"}
 ```{r ggplot67}
 
 library(tidyverse)
@@ -247,7 +266,7 @@ With the timbre based self similarity matrice you can definetly see more of a st
 <p>
 
 
-### Self Similarity Matrice - We Belong Together 
+### Self Similarity Matrice - We Belong Together {data-commentary-width="400"}
 ```{r ggplot97}
 
 library(tidyverse)
@@ -331,7 +350,7 @@ The timbre based self similarity matrice is  also interesting because it kinds s
 
 <p>
 
-### Chordogram Single Ladies 
+### Chordogram Single Ladies {data-commentary-width="400"}
 
 ```{r ggplot2}
 
@@ -489,7 +508,8 @@ renny <- get_playlist_audio_features('','4lPqkYWl4aQEFUwRQWngHu')
 
 <p>
 
-
+I also made a histogram with all of the grammy winning songs 
+to see if the tempo matches up with the valance  of the songs and for the most part it does and what struck me was that single ladies had the highest tempo but still a failry low valance. We belong together also as I concluded previosly from the self similarity matrices a higher tempo then the rest which could explain why the song feels more up beat. 
 
 <p>
 
@@ -519,13 +539,95 @@ I chose Black Parade again to do a tempogram of because I'm still kind of in awe
 
 <p>
 
-### Clustering 
-```{r ggplot689}
+### Clustering {data-commentary-width="400"}
 
+```{r ggplot689}
+library(tidyverse)
+library(tidymodels)
+library(ggdendro)
+library(heatmaply)
+library(spotifyr)
+library(compmus)
+
+get_conf_mat <- function(fit) {
+  outcome <- .get_tune_outcome_names(fit)
+  fit |> 
+    collect_predictions() |> 
+    conf_mat(truth = outcome, estimate = .pred_class)
+}  
+
+get_pr <- function(fit) {
+  fit |> 
+    conf_mat_resampled() |> 
+    group_by(Prediction) |> mutate(precision = Freq / sum(Freq)) |> 
+    group_by(Truth) |> mutate(recall = Freq / sum(Freq)) |> 
+    ungroup() |> filter(Prediction == Truth) |> 
+    select(class = Prediction, precision, recall)
+}  
+
+  bmrhitsgramm <- 
+get_playlist_audio_features('','4SW5SlC1QM1pjv86CJ7QwT') %>% 
+
+  add_audio_analysis() |>
+  mutate(
+    segments = map2(segments, key, compmus_c_transpose),
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "mean", norm = "manhattan"
+      ),
+    timbre =
+      map(
+        segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  ) |>
+  mutate(pitches = map(pitches, compmus_normalise, "clr")) |>
+  mutate_at(vars(pitches, timbre), map, bind_rows) |>
+  unnest(cols = c(pitches, timbre))
+  
+  bmr_juice <-
+  recipe(
+    track.name ~
+      danceability +
+      energy +
+      loudness +
+      speechiness +
+      acousticness +
+      instrumentalness +
+      liveness +
+      valence +
+      tempo +
+      duration +
+      C + `C#|Db` + D + `D#|Eb` +
+      E + `F` + `F#|Gb` + G +
+      `G#|Ab` + A + `A#|Bb` + B +
+      c01 + c02 + c03 + c04 + c05 + c06 +
+      c07 + c08 + c09 + c10 + c11 + c12,
+    data = bmrhitsgramm
+  ) |>
+  step_center(all_predictors()) |>
+  step_scale(all_predictors()) |> 
+  # step_range(all_predictors()) |> 
+  prep(bmrhitsgramm |> mutate(track.name = str_trunc(track.name, 20))) |>
+  juice() |>
+  column_to_rownames("track.name")
+  
+bmr_dist <- dist(bmr_juice, method = "euclidean")
+
+bmr_dist |> 
+  hclust(method = "complete") |> # Try single, average, and complete.
+  dendro_data() |>
+  ggdendrogram()
 
 ```
+***
+<p>
+Clustering the playlist into a dendogram shows 4 very distinct categories, what's really interesting is that it managed to recognize Beyoncé's three number 1 hits. It has also managed to seperate some of the more accoustic tracks from the less acoustic ones. There is some weirdess however so for example "BREAK MY SOUL' bing among what is othrwise only Mariah Carey song. Or "Only Girl in the World" and "Disturbia" so close together despite those tracks bing the polor opposites of eachother at least aeesthetically speaking. 
+<p>
 
 ### Conclusion
-
-In Conclusion, I set out to explore what makes a good R&B song or rather what strategies do Mariah Carey, Beyoncé and Rihanna all employ that make them succesful R&B artists and I definetely gained some valuable insight 
-
+<p>
+In Conclusion, I set out to explore what makes a good R&B song or rather what strategies do Mariah Carey, Beyoncé and Rihanna all employ that make them succesful R&B artists and I definetely gained some valuable insight, eespecially in terms of evidence of how the genre has changed over the years but also some more unexpected relationships between emotional valence, danceability and acousticness. This is ofcourse still only three artists so I'm not surre how well it relfects the entire R&B community but it does give some valuable insight in what makes each of their music unique. Its also interesting that how they sing and how they make their music was very evident in some of the data, its like their own personal stamp on the music. 
+<p>
